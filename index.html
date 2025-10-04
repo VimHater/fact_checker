@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fact Checker</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="text-center py-6">
+            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">
+                Kiểm Chứng Thông Tin
+            </h1>
+            <p class="mt-2 text-lg text-gray-600">
+                    Xác thực thông tin bằng llm
+            </p>
+        </header>
+
+        <!-- Input Section -->
+        <div class="bg-white p-6 rounded-xl shadow-2xl border border-gray-100">
+            <textarea id="claimInput" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" rows="4" placeholder="Enter the claim you want to fact-check (e.g., 'The Eiffel Tower was built in 1887' or 'The fastest land animal is the cheetah')."></textarea>
+            <button id="factCheckButton" onclick="checkClaim()" class="mt-4 w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out disabled:bg-blue-400">
+                Kiểm chứng
+            </button>
+            <div id="loadingIndicator" class="hidden mt-4 text-center text-blue-600 font-medium">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 1116 0A8 8 0 014 12z"></path>
+                </svg>
+                Đang đối chiếu thông tin...
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div id="resultSection" class="mt-8 hidden">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Kết quả</h2>
+
+            <div id="statusBox" class="p-4 rounded-lg border-2 mb-6">
+                <p class="text-sm font-semibold uppercase">DETERMINATION:</p>
+                <p id="determinationText" class="text-3xl font-extrabold mt-1"></p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Analysis</h3>
+                <div id="analysisContent" class="prose max-w-none text-gray-700 leading-relaxed">
+                    <!-- Analysis text goes here -->
+                </div>
+
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3 border-t pt-4"></h3>
+                <ul id="sourcesList" class="space-y-2 text-sm text-gray-600">
+                    <!-- Sources list goes here -->
+                </ul>
+            </div>
+        </div>
+        
+        <p class="mt-8 text-xs text-center text-gray-400">
+            Gemini API
+        </p>
+
+        <!-- Custom Alert/Modal for errors -->
+        <div id="errorModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center p-4">
+            <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full">
+                <h3 class="text-xl font-bold text-red-600 mb-3">Error</h3>
+                <p id="errorMessage" class="text-gray-700"></p>
+                <button onclick="document.getElementById('errorModal').classList.add('hidden')" class="mt-4 w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to external JavaScript -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
+

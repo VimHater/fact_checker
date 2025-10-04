@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f7f9fc;
+}
+/* Styles for the True determination */
+.status-true { 
+    background-color: #d1fae5; 
+    color: #065f46; 
+    border-color: #34d399; 
+}
+/* Styles for the False determination */
+.status-false { 
+    background-color: #fee2e2; 
+    color: #991b1b; 
+    border-color: #f87171; 
+}
+/* Styles for the Unverified determination */
+.status-unverified { 
+    background-color: #fef3c7; 
+    color: #92400e; 
+    border-color: #fcd34d; 
+}
+
