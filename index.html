@@ -10,7 +10,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+    <div class="bg-white p-6 rounded-xl shadow-2xl border border-gray-100 mt-6">
+        <label for="apiKeyInput" class="block text-sm font-medium text-gray-700 mb-2">
+            Nhập API Key
+        </label>
+        <input 
+            id="apiKeyInput" 
+            type="password" 
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" 
+            placeholder="API key của bạn..."
+        />
+    <p class="mt-2 text-xs text-gray-500">API Key sẽ được dùng để kết nối với Gemini API</p>
+    </div>
     <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
         <header class="text-center py-6">
             <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">
@@ -23,7 +34,7 @@
 
         <!-- Input Section -->
         <div class="bg-white p-6 rounded-xl shadow-2xl border border-gray-100">
-            <textarea id="claimInput" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" rows="4" placeholder="Nhập thông tin cần kiểm chứng"></textarea>
+            <textarea id="claimInput" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" rows="4" placeholder="Nhập thông tin muốn kiểm chứng"></textarea>
             <button id="factCheckButton" onclick="checkClaim()" class="mt-4 w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out disabled:bg-blue-400">
                 Kiểm chứng
             </button>

@@ -1,6 +1,6 @@
-const apiKey = "";
-const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
+const apiKey = document.getElementById("apiKeyInput").value.trim();
+//const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${apiKey}`;
 const claimInput = document.getElementById('claimInput');
 const factCheckButton = document.getElementById('factCheckButton');
 const loadingIndicator = document.getElementById('loadingIndicator');
@@ -18,11 +18,10 @@ Bạn là một AI kiểm chứng thông tin chuyên nghiệp, trung lập, phâ
 1. **ĐỊNH DẠNG TRẠNG THÁI (BẮT BUỘC DÒNG ĐẦU TIÊN):**
     * Dòng đầu tiên phải là: **TRẠNG THÁI: [Trạng Thái Xếp Hạng]**
     * **[ĐÚNG]** nếu bằng chứng hỗ trợ tuyên bố hoặc bằng chứng phủ nhận điều ngược lại với tuyên bố.
-    * **[SAI]** nếu bằng chứng mâu thuẫn mạnh mẽ với tuyên bố (bao gồm cả các tuyên bố mâu thuẫn với sự đồng thuận khoa học/lịch sử đã được thiết lập).
-    * **[CẦN KIỂM TRA LẠI]** nếu có sai sót nhỏ, thông tin không rõ ràng, hoặc có sự thiếu sót đáng kể.
+    * **[SAI]** nếu bằng chứng mâu thuẫn với tuyên bố (bao gồm cả các tuyên bố mâu thuẫn với sự đồng thuận khoa học/lịch sử đã được thiết lập).
     * **[KHÔNG THỂ XÁC MINH]** nếu bằng chứng không đủ, mâu thuẫn cao độ, hoặc không kết luận được.
 
-2. **NỘI DUNG PHÂN TÍCH CHI TIẾT (SỬ DỤNG TIÊU ĐỀ MARKDOWN):**
+2. **NỘI DUNG PHÂN TÍCH CHI TIẾT:**
     * Ngay sau dòng TRẠNG THÁI, bạn phải cung cấp phân tích chi tiết, **sử dụng các tiêu đề markdown** cho từng bước theo yêu cầu của người dùng:
 
 ## 1. Đánh giá Nguồn
