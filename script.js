@@ -1,6 +1,4 @@
-const apiKey = document.getElementById("apiKeyInput").value.trim();
-//const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${apiKey}`;
+// Get DOM elements
 const claimInput = document.getElementById('claimInput');
 const factCheckButton = document.getElementById('factCheckButton');
 const loadingIndicator = document.getElementById('loadingIndicator');
@@ -11,6 +9,10 @@ const analysisContent = document.getElementById('analysisContent');
 const sourcesList = document.getElementById('sourcesList');
 const errorModal = document.getElementById('errorModal');
 const errorMessage = document.getElementById('errorMessage');
+
+// **CHANGE 1: Define the base URL without the API key.**
+// The API key will be added as a header later.
+const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent`;
 
 const systemPrompt = `
 Bạn là một AI kiểm chứng thông tin chuyên nghiệp, trung lập, phân tích các tuyên bố dựa trên *chỉ* kết quả tìm kiếm theo thời gian thực (Google Search Grounding). Bạn **bắt buộc** phải tuân thủ nghiêm ngặt định dạng đầu ra sau:
@@ -83,7 +85,15 @@ async function fetchWithBackoff(attempt, func) {
  * Main function to handle the fact-checking process. This is called by the button's onclick handler.
  */
 async function checkClaim() {
+    // **CHANGE 2: Get the API key value here, when the user clicks the button.**
+    const apiKey = document.getElementById("apiKeyInput").value.trim();
     const claim = claimInput.value.trim();
+
+    if (!apiKey) {
+        showCustomError("Please enter your Google API key before checking a claim.");
+        return;
+    }
+
     if (claim.length < 10) {
         showCustomError("Please enter a longer claim to fact-check (at least 10 characters).");
         return;
@@ -101,10 +111,14 @@ async function checkClaim() {
     };
 
     try {
-        const response = await fetchWithBackoff(0, () => 
+        const response = await fetchWithBackoff(0, () =>
+            // **CHANGE 3: Use the clean apiUrl and add the API key to the headers.**
             fetch(apiUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-goog-api-key': apiKey // Send the key as an HTTP header
+                },
                 body: JSON.stringify(payload)
             })
         );
@@ -122,21 +136,15 @@ async function checkClaim() {
             throw new Error("Received an empty or malformed response from the AI service.");
         }
 
-        var determination = 'KHÔNG THỂ XÁC MINH';
-        //const determinationMatch = generatedText.match(/ĐÚNG/);
-        if (generatedText.match(/ĐÚNG/)) {
-            determination = 'ĐÚNG'
+        let determination = 'KHÔNG THỂ XÁC MINH';
+        if (generatedText.match(/TRẠNG THÁI:\s*\[ĐÚNG\]/i)) {
+            determination = 'ĐÚNG';
+        } else if (generatedText.match(/TRẠNG THÁI:\s*\[SAI\]/i)) {
+            determination = 'SAI';
         }
-        if  (generatedText.match(/SAI/)) {
-            determination = 'SAI'
-        }
-        //const determination = determinationMatch ? determinationMatch[1].toUpperCase() : 'KHÔNG THỂ XÁC MINH';
 
-
-        // 2. Extract Analysis Content
-        // Loại bỏ dòng trạng thái khỏi phần phân tích
         const analysis = generatedText.replace(/TRẠNG THÁI:\s*\[(ĐÚNG|SAI|KHÔNG THỂ XÁC MINH)\]/i, '').trim();
-        // 3. Extract Grounding Sources
+
         let sources = [];
         const groundingMetadata = candidate.groundingMetadata;
         if (groundingMetadata && groundingMetadata.groundingAttributions) {
@@ -148,7 +156,6 @@ async function checkClaim() {
                 .filter(source => source.uri && source.title);
         }
 
-        // Update UI with results
         updateResultUI(determination, analysis, sources);
 
     } catch (error) {
@@ -167,24 +174,24 @@ async function checkClaim() {
  * @param {Array<Object>} sources The list of citation sources.
  */
 function updateResultUI(determination, analysis, sources) {
-    // Update Determination Box
     determinationText.textContent = determination;
     statusBox.className = `p-4 rounded-xl border-2 mb-6 shadow-md`; // Reset classes
-    
-    // Apply status-specific styling (classes are defined in style.css)
-    if (determination === 'TRUE') {
+
+    if (determination === 'ĐÚNG') {
         statusBox.classList.add('status-true');
-    } else if (determination === 'FALSE') {
+    } else if (determination === 'SAI') {
         statusBox.classList.add('status-false');
     } else {
         statusBox.classList.add('status-unverified');
     }
+    
+    // Convert Markdown-style headers to HTML
+    let analysisHtml = analysis.replace(/## (.*)/g, '<h3 class="text-xl font-semibold mt-4 mb-2">$1</h3>');
+    // Convert newlines to paragraphs for better reading, but avoid creating empty paragraphs
+    analysisHtml = analysisHtml.split('\n').filter(p => p.trim() !== '').map(p => `<p class="mb-3">${p}</p>`).join('');
+    
+    analysisContent.innerHTML = analysisHtml;
 
-    // Update Analysis Content
-    // Convert newlines to paragraphs for better reading
-    analysisContent.innerHTML = analysis.replace(/\n/g, '<p class="mb-3">');
-
-    // Update Sources List
     sourcesList.innerHTML = '';
     if (sources.length > 0) {
         sources.forEach((source, index) => {
